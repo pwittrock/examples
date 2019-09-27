@@ -1,0 +1,34 @@
+metadata:
+  name: cockroachdb
+packageMetadata:
+  shortDescription: sample description
+commands:
+- command:
+    use: "replicas"
+    path: ["set"]
+    short: "set the replicas for cockroachdb"
+    long: |
+      Set the replicas for cockroachdb
+    example: |
+      # set replicas --value 3
+    inputs:
+    - type: int
+      name: value
+      required: true
+      description: "the value to set"
+  pipeline:
+    filters:
+    - kind: MatchModifier
+      match: [
+        [{"kind": "PathGetter", "path": ["metadata"]},
+         {"kind": "FieldMatcher", name: "name", stringValue: '{{ arg 0 }}'}
+        ],
+        [{"kind": "FieldMatcher", "path": "kind", "stringValue": "CockroachDB"}]
+      ]
+      modify:
+      - kind: "PathGetter"
+        path: ["spec"]
+      - kind: "FieldSetter"
+        name: "replicas"
+        stringValue: '{{ input value }}'
+
