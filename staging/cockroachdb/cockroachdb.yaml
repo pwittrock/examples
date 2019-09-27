@@ -1,4 +1,4 @@
-apiVersion: gcr.io/pwittrock-dev/cockroachdb:v3
+apiVersion: gcr.io/pwittrock-dev/cockroachdb:v4
 kind: CockroachDB
 metadata:
   name: cockroachdb
