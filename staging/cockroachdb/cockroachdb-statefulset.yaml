@@ -74,7 +74,7 @@ metadata:
     app: cockroachdb
 spec:
   serviceName: "cockroachdb"
-  replicas: 3
+  replicas: 7
   selector:
     matchLabels:
       app: cockroachdb
@@ -98,7 +98,7 @@ spec:
       # to add an additional arg to this pod: "-domain=<your-custom-domain>"
       initContainers:
       - name: bootstrap
-        image: cockroachdb/cockroach-k8s-init:0.2
+        image: cockroachdb/cockroach-k8s-init:0.3
         imagePullPolicy: IfNotPresent
         args:
         - "-on-start=/on-start.sh"
@@ -125,7 +125,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: cockroachdb
-        image: cockroachdb/cockroach:v1.1.0
+        image: cockroachdb/cockroach:v1.1.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 26257
