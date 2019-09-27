@@ -5,10 +5,10 @@ metadata:
   # automatically load balance connections to the different database pods.
   name: cockroachdb-public
   labels:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
 spec:
   selector:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
   ports:
   - name: grpc
     # The main port, served by gRPC, serves Postgres-flavor SQL, internode
@@ -29,7 +29,7 @@ metadata:
   # in most circumstances.
   name: cockroachdb
   labels:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
   annotations:
     prometheus.io/path: _status/vars
     prometheus.io/port: "8080"
@@ -44,7 +44,7 @@ metadata:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   selector:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
   ports:
   - name: grpc
     port: 26257
@@ -59,11 +59,11 @@ kind: PodDisruptionBudget
 metadata:
   name: cockroachdb-budget
   labels:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
 spec:
   selector:
     matchLabels:
-      app: cockroachdb
+      app: cockroachdb-cockroachdb
   minAvailable: 67%
 ---
 apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
@@ -71,16 +71,19 @@ kind: StatefulSet
 metadata:
   name: cockroachdb
   labels:
-    app: cockroachdb
+    app: cockroachdb-cockroachdb
+  annotations:
+    kpt.dev/duck/get-image: disabled
+    kpt.dev/duck/set-image: disabled
 spec:
-  replicas: 9
+  replicas: 7
   selector:
     matchLabels:
-      app: cockroachdb
+      app: cockroachdb-cockroachdb
   template:
     metadata:
       labels:
-        app: cockroachdb
+        app: cockroachdb-cockroachdb
     spec:
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
@@ -100,7 +103,7 @@ spec:
       # to add an additional arg to this pod: "-domain=<your-custom-domain>"
       initContainers:
       - name: bootstrap
-        image: cockroachdb/cockroach-k8s-init:0.4
+        image: cockroachdb/cockroach-k8s-init:0.1
         args:
         - -on-start=/on-start.sh
         - -service=cockroachdb
@@ -115,12 +118,12 @@ spec:
         imagePullPolicy: IfNotPresent
       containers:
       - name: cockroachdb
-        image: cockroachdb/cockroach:v1.1.2
+        image: cockroachdb/cockroach:v1.1.0
         command:
         - /bin/bash
         - -ecx
         - |
-          # The use of qualified `hostname -f` is crucial:
+          # The use of qualified `hostname -f`is crucial:
           # Other nodes aren't able to look up the unqualified hostname.
           CRARGS=("start" "--logtostderr" "--insecure" "--host" "$(hostname -f)" "--http-host" "0.0.0.0")
           # We only want to initialize a new cluster (by omitting the join flag)
