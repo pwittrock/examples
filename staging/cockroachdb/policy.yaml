@@ -1,0 +1,2 @@
+apiVersion: gcr.io/pwittrock-dev/resource-policy:v4
+kind: ResourcePolicy
