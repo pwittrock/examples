@@ -1,0 +1,6 @@
+apiVersion: gcr.io/pwittrock-dev/cockroachdb:v3
+kind: CockroachDB
+metadata:
+  name: cockroachdb
+spec:
+  replicas: 7
