@@ -1,0 +1,8 @@
+apiVersion: kpt.dev/v1alpha1
+kind: KptFile
+metadata:
+    name: cockroachdb
+packageMetadata:
+    shortDescription: cockroachdb
+disableDuckCommands:
+  - set-image
