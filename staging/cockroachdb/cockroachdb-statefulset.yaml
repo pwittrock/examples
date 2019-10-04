@@ -73,7 +73,7 @@ metadata:
   labels:
     app: cockroachdb
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: cockroachdb
@@ -115,7 +115,7 @@ spec:
         imagePullPolicy: IfNotPresent
       containers:
       - name: cockroachdb
-        image: cockroachdb/cockroach:v1.1.0
+        image: cockroachdb/cockroach:v1.1.1
         command:
         - /bin/bash
         - -ecx
